@@ -1,6 +1,8 @@
 <?php
 namespace booosta\templateparser;
 
+include_once 'DefaultTags.php';
+
 class HTML5Tags extends Tags
 {
   protected $cal_libpath = 'lib/modules/datepicker';

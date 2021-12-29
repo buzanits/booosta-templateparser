@@ -2,6 +2,7 @@
 namespace booosta\templateparser;
 
 #use booosta\usersystem\Admin_Authenticator;
+include_once 'HTML5Tags.php';
 
 class BootstrapTags extends Tags
 {
@@ -99,7 +100,7 @@ class BootstrapTags extends Tags
         'rsize'         => '4',
         'rasize'        => '4',
         'bboxsize'      => '12,12,10,8',
-        'buttontext'    => $this->t('apply'),
+        'buttontext'    => is_callable([$this, 't']) ? $this->t('apply') : 'apply',
         'btn-color'     => 'primary',
         'btn-icon'      => null,
         #'btn-icon'      => 'arrow',

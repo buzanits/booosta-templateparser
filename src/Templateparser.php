@@ -2,9 +2,6 @@
 namespace booosta\templateparser;
 \booosta\Framework::init_module('templateparser');
 
-#include_once 'default.tags.php';
-#include_once 'html5.tags.php';
-
 class Templateparser extends \booosta\base\Module
 {
   use moduletrait_templateparser;
@@ -25,8 +22,6 @@ class Templateparser extends \booosta\base\Module
     #$this->tags = 'TemplatemoduleTags';
     $this->tags = 'DefaultTags';
     if($tags = $this->config('parser_tags')) $this->tags = $tags;
-    #elseif($template_module = $this->config('template_module')) include_once "lib/modules/$template_module/default.tags.php";
-    #else include_once 'lib/modules/bootstrap/default.tags.php';
   }    
 
   public function set_tags($data) { $this->tags = $data; }
@@ -273,14 +268,14 @@ class Templateparser extends \booosta\base\Module
  
     if(($html = $this->scripttags[$attribute[0]]) != ''):      // Tag found in scripttags
       $tagobj = $this->makeInstance("\\booosta\\templateparser\\GenericTag", $code, $html, $attribute, $extraattr, $this->defaultvars,
-                                    $this->scriptprecode[$attribute[0]], $this->scriptpostcode[$attribute[0]]);
+                                    $this->scriptprecode[$attribute[0]] ?? null, $this->scriptpostcode[$attribute[0]] ?? null);
     else:   // not found in scripttags
       if(isset($this->aliases[$attribute[0]])):  // found in aliases
         if($this->scripttags[$this->aliases[$attribute[0]]] != ''):  // alias found in scripttags
           $attribute[0] = $this->aliases[$attribute[0]];
           $html = $this->scripttags[$attribute[0]];
           $tagobj = $this->makeInstance("\\booosta\\templateparser\\GenericTag", $code, $html, $attribute, $extraattr, $this->defaultvars,
-                                      $this->scriptprecode[$attribute[0]], $this->scriptpostcode[$attribute[0]]);
+                                      $this->scriptprecode[$attribute[0]] ?? null, $this->scriptpostcode[$attribute[0]] ?? null);
         else:   // alias found, but not in scripttags
           if(class_exists("\\booosta\\templateparser\\tags\\{$this->aliases[$attribute[0]]}")):
             $tagobj = $this->makeInstance("\\booosta\\templateparser\\tags\\{$this->aliases[$attribute[0]]}", $code, $this->defaultvars, $attribute, $extraattr);
@@ -410,7 +405,7 @@ abstract class Tag extends \booosta\base\Base
 
     // replace %1 with 1st attribute and so on
     $attrib = $this->attributes;
-    $this->html = preg_replace_callback('/%([1-9][0-9]*)/', function($m) use($attrib){ return $attrib[$m[1]]; }, $this->html);
+    $this->html = preg_replace_callback('/%([1-9][0-9]*)/', function($m) use($attrib){ return $attrib[$m[1]] ?? null; }, $this->html);
     #\booosta\debug($attrib);
 
     // sort defaultvars by key length to avoid replacing parts of the var name of a longer var by a shorter one
@@ -515,7 +510,7 @@ abstract class Tag extends \booosta\base\Base
     return $data;
   }
 
-  protected function get_data($key) { return self::$sharedInfo['templateparser']['data'][$key]; }
+  protected function get_data($key) { return self::$sharedInfo['templateparser']['data'][$key] ?? null; }
 
   public function get_html() 
   {
