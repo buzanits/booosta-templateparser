@@ -126,7 +126,7 @@ class Templateparser extends \booosta\base\Module
     $parsetext = preg_replace_callback('/{{%([^}]+)}}/', function($m) use($TPL){ return self::escape_curl($TPL[$m[1]] ?? null); }, $parsetext); //global variables for {{%var}} - escape { and } 
     $parsetext = preg_replace_callback('/{%!([^}]+)}/', function($m) use($TPL){ return htmlspecialchars($TPL[$m[1]] ?? null, ENT_QUOTES); }, $parsetext);  //global variables for {%!var}
     $parsetext = preg_replace_callback('/{%\'([^}]+)}/', function($m) use($TPL){ return addcslashes($TPL[$m[1]] ?? null,"\'"); }, $parsetext);  //global variables for {%'var}
-    $parsetext = preg_replace_callback('/{t%([^}]+)}/', function($m){ return $this->t($m[1]); }, $parsetext);  //translate {t%mytext} to $this->t('mytext')
+    $parsetext = preg_replace_callback('/{t%([^}]+)}/', function($m) use($TPL){ return $this->t($TPL[$m[1]]); }, $parsetext);  //translate {t%mytext} to $this->t('mytext')
     $parsetext = preg_replace_callback('/{%([^}]+)}/', function($m) use($TPL){ return $TPL[$m[1]] ?? null; }, $parsetext);  //global variables for {%var}
     $parsetext = str_replace('$', '__dollar__', $parsetext);
     $parsetext = preg_replace_callback('/{([^}]+)}/', function($m){ return self::parse_pseudotag(stripslashes($m[1])); }, $parsetext);
@@ -266,7 +266,7 @@ class Templateparser extends \booosta\base\Module
     #\booosta\debug($attribute);
     #\booosta\debug($attribute[0]);
  
-    if(($html = $this->scripttags[$attribute[0]]) != ''):      // Tag found in scripttags
+    if(!empty($this->scripttags[$attribute[0]]) && ($html = $this->scripttags[$attribute[0]]) != ''):      // Tag found in scripttags
       $tagobj = $this->makeInstance("\\booosta\\templateparser\\GenericTag", $code, $html, $attribute, $extraattr, $this->defaultvars,
                                     $this->scriptprecode[$attribute[0]] ?? null, $this->scriptpostcode[$attribute[0]] ?? null);
     else:   // not found in scripttags
