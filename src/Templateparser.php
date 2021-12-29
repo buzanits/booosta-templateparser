@@ -1,8 +1,9 @@
 <?php
 namespace booosta\templateparser;
+\booosta\Framework::init_module('templateparser');
 
-include_once 'default.tags.php';
-include_once 'html5.tags.php';
+#include_once 'default.tags.php';
+#include_once 'html5.tags.php';
 
 class Templateparser extends \booosta\base\Module
 {
@@ -21,10 +22,11 @@ class Templateparser extends \booosta\base\Module
 
     $this->lang = $lang;
 
-    $this->tags = 'TemplatemoduleTags';
+    #$this->tags = 'TemplatemoduleTags';
+    $this->tags = 'DefaultTags';
     if($tags = $this->config('parser_tags')) $this->tags = $tags;
-    elseif($template_module = $this->config('template_module')) include_once "lib/modules/$template_module/default.tags.php";
-    else include_once 'lib/modules/bootstrap/default.tags.php';
+    #elseif($template_module = $this->config('template_module')) include_once "lib/modules/$template_module/default.tags.php";
+    #else include_once 'lib/modules/bootstrap/default.tags.php';
   }    
 
   public function set_tags($data) { $this->tags = $data; }
@@ -72,7 +74,7 @@ class Templateparser extends \booosta\base\Module
     $parsetext = implode("\n", $_buffer);
     #\booosta\debug('before ' . $options['recursive']); \booosta\debug($parsetext);
 
-    if($options['recursive']):
+    if(!empty($options['recursive'])):
       $this->do_replacement = true;
       while($this->do_replacement) $parsetext = $this->replace_tags($parsetext);  // as long as there were replacements done, try again to replace vars in the replacements
     else:
@@ -87,7 +89,7 @@ class Templateparser extends \booosta\base\Module
 
     // Execute Code that tags have defined to run at the end
     $postfunc_result = [];
-    if(is_array(self::$sharedInfo['templateparser']['postfunctions']))
+    if(!empty(self::$sharedInfo['templateparser']['postfunctions']) && is_array(self::$sharedInfo['templateparser']['postfunctions']))
       foreach(self::$sharedInfo['templateparser']['postfunctions'] as $func)
         if(is_callable($func)) $postfunc_result[] = $func();
 
@@ -102,7 +104,7 @@ class Templateparser extends \booosta\base\Module
       endif;
 
     // get extra-js and add it to replacements
-    $extra_js = self::$sharedInfo['templateparser']['data']['extra-js'];
+    $extra_js = self::$sharedInfo['templateparser']['data']['extra-js'] ?? null;
     if(is_array($extra_js))
       foreach($extra_js as $search=>$js):
         $searches[] = $search;
@@ -117,19 +119,20 @@ class Templateparser extends \booosta\base\Module
   protected function replace_tags($parsetext)
   {
     $TPL = $this->tplvars;
+    if(!is_array($TPL)) $TPL = [];
 
     $original = $parsetext;
     #\booosta\debug("original: $parsetext");
 
     $parsetext = preg_replace_callback('/{%PHPSELF}/', function($m){ return $_SERVER['PHP_SELF']; }, $parsetext);
     $parsetext = preg_replace_callback('/{%SCRIPTNAME}/', function($m){ return str_replace('/', '', $_SERVER['SCRIPT_NAME']); }, $parsetext);
-    $parsetext = preg_replace_callback('/{#([^A-Za-z0-9_]+)([A-Za-z0-9_]+)}/', function($m) use($TPL){ return self::escape_multi($m[1], $TPL[$m[2]]); }, $parsetext);
-    $parsetext = preg_replace_callback('/{\*([^}]+)}/', function($m) use($TPL){ return self::escape_multi("\":", $TPL[$m[1]]); }, $parsetext);
-    $parsetext = preg_replace_callback('/{{%([^}]+)}}/', function($m) use($TPL){ return self::escape_curl($TPL[$m[1]]); }, $parsetext); //global variables for {{%var}} - escape { and } 
-    $parsetext = preg_replace_callback('/{%!([^}]+)}/', function($m) use($TPL){ return htmlspecialchars($TPL[$m[1]], ENT_QUOTES); }, $parsetext);  //global variables for {%!var}
-    $parsetext = preg_replace_callback('/{%\'([^}]+)}/', function($m) use($TPL){ return addcslashes($TPL[$m[1]],"\'"); }, $parsetext);  //global variables for {%'var}
+    $parsetext = preg_replace_callback('/{#([^A-Za-z0-9_]+)([A-Za-z0-9_]+)}/', function($m) use($TPL){ return self::escape_multi($m[1], $TPL[$m[2]] ?? null); }, $parsetext);
+    $parsetext = preg_replace_callback('/{\*([^}]+)}/', function($m) use($TPL){ return self::escape_multi("\":", $TPL[$m[1]] ?? null); }, $parsetext);
+    $parsetext = preg_replace_callback('/{{%([^}]+)}}/', function($m) use($TPL){ return self::escape_curl($TPL[$m[1]] ?? null); }, $parsetext); //global variables for {{%var}} - escape { and } 
+    $parsetext = preg_replace_callback('/{%!([^}]+)}/', function($m) use($TPL){ return htmlspecialchars($TPL[$m[1]] ?? null, ENT_QUOTES); }, $parsetext);  //global variables for {%!var}
+    $parsetext = preg_replace_callback('/{%\'([^}]+)}/', function($m) use($TPL){ return addcslashes($TPL[$m[1]] ?? null,"\'"); }, $parsetext);  //global variables for {%'var}
     $parsetext = preg_replace_callback('/{t%([^}]+)}/', function($m){ return $this->t($m[1]); }, $parsetext);  //translate {t%mytext} to $this->t('mytext')
-    $parsetext = preg_replace_callback('/{%([^}]+)}/', function($m) use($TPL){ return $TPL[$m[1]]; }, $parsetext);  //global variables for {%var}
+    $parsetext = preg_replace_callback('/{%([^}]+)}/', function($m) use($TPL){ return $TPL[$m[1]] ?? null; }, $parsetext);  //global variables for {%var}
     $parsetext = str_replace('$', '__dollar__', $parsetext);
     $parsetext = preg_replace_callback('/{([^}]+)}/', function($m){ return self::parse_pseudotag(stripslashes($m[1])); }, $parsetext);
     $parsetext = str_replace('__dollar__', '$', $parsetext);
