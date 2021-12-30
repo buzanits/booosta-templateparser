@@ -24,7 +24,7 @@ class Templateparser extends \booosta\base\Module
     if($tags = $this->config('parser_tags')):
       $this->tags = $tags;
     elseif($template_module = $this->config('template_module')):
-      include_once "vendor/booosta/$template_module/default.tags.php";
+      include_once __DIR__ . "/../../$template_module/src/default.tags.php";
       $this->tags = 'TemplatemoduleTags';
     endif;
   }    
@@ -382,6 +382,8 @@ class Tags extends \booosta\base\Base
 
     return "$head?" . implode('&', $result);
   }
+
+  public static function load() {}   // called just for autoloading this class
 }
 
 

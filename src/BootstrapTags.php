@@ -1,7 +1,7 @@
 <?php
 namespace booosta\templateparser;
 
-include_once 'HTML5Tags.php';
+HTML5Tags::load();
 
 class BootstrapTags extends Tags
 {
