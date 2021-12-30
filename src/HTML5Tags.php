@@ -5,8 +5,6 @@ include_once 'DefaultTags.php';
 
 class HTML5Tags extends Tags
 {
-  protected $cal_libpath = 'lib/modules/datepicker';
-
   public function __construct()
   {
     parent::__construct();

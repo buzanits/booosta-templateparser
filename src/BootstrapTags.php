@@ -1,13 +1,10 @@
 <?php
 namespace booosta\templateparser;
 
-#use booosta\usersystem\Admin_Authenticator;
 include_once 'HTML5Tags.php';
 
 class BootstrapTags extends Tags
 {
-  protected $cal_libpath = 'lib/modules/datepicker';
-
   public function __construct()
   {
     parent::__construct();

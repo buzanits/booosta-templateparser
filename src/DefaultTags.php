@@ -1,11 +1,8 @@
 <?php
 namespace booosta\templateparser;
 
-#class TemplatemoduleTags extends Tags
 class DefaultTags extends Tags
 {
-  protected $cal_libpath = 'lib/modules/datepicker';
-  
   public function __construct()
   {
     parent::__construct();
@@ -118,7 +115,7 @@ class wysiwyg extends textarea
   protected function postcode()
   {
     if(!self::$include)
-      $this->html = str_replace('%incl', "<script type='text/javascript' src='lib/modules/wysiwygeditor/ckeditor.js'></script>", 
+      $this->html = str_replace('%incl', "<script type='text/javascript' src='vendor/booosta/wysiwygeditor/ckeditor.js'></script>", 
         $this->html);
     else
       $this->html = str_replace('%incl', '', $this->html);
