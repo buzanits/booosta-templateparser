@@ -19,9 +19,14 @@ class Templateparser extends \booosta\base\Module
 
     $this->lang = $lang;
 
-    #$this->tags = 'TemplatemoduleTags';
     $this->tags = 'DefaultTags';
-    if($tags = $this->config('parser_tags')) $this->tags = $tags;
+
+    if($tags = $this->config('parser_tags')):
+      $this->tags = $tags;
+    elseif($template_module = $this->config('template_module')):
+      include_once "vendor/booosta/$template_module/default.tags.php";
+      $this->tags = 'TemplatemoduleTags';
+    endif;
   }    
 
   public function set_tags($data) { $this->tags = $data; }
