@@ -34,6 +34,7 @@ class Templateparser extends \booosta\base\Module
 
   public function parse_template($tpl, $subtpls = null, $tplvars = null, $options = [])
   {
+    #\booosta\Framework::debug("tpl: " . is_readable($tpl));
     $tags = $this->makeInstance("\\booosta\\templateparser\\" . $this->tags);
     $this->scripttags = $tags->get_scripttags();
     $this->scriptprecode = $tags->get_scriptprecode();
@@ -202,8 +203,13 @@ class Templateparser extends \booosta\base\Module
   
   protected function get_template($tpl, $subtpls = null)
   {
-    if(is_object($this->topobj)) $prefix = $this->topobj->tpldir;
-    else $prefix = '';
+    #\booosta\Framework::debug("get: $tpl");
+    if(is_object($this->topobj)):
+      $prefix = $this->topobj->tpldir;
+      $subprefix = $this->topobj->subtpldir;
+    else:
+      $prefix = '';
+    endif;
 
     if(substr($tpl, 0, 1) == '/'):    // get template from root path
       $prefix = '';
@@ -211,9 +217,11 @@ class Templateparser extends \booosta\base\Module
     endif;
 
     if($this->lang && file_exists("$prefix$tpl.$this->lang")) $text = file_get_contents("$prefix$tpl.$this->lang");
-    elseif(file_exists("$prefix$tpl")) $text = file_get_contents("$prefix$tpl");
+    elseif(is_readable("$prefix$tpl")) $text = file_get_contents("$prefix$tpl");
+    elseif($this->lang && file_exists("$subprefix$tpl.$this->lang")) $text = file_get_contents("$subprefix$tpl.$this->lang");
+    elseif(is_readable("$subprefix$tpl")) $text = file_get_contents("$subprefix$tpl");
     else $text = $tpl;
-    #\booosta\debug("tpl: $prefix$tpl"); \booosta\debug($text);
+    #\booosta\Framework::debug("tpl: $prefix$tpl"); \booosta\Framework::debug($text);
 
     $inclpos = strpos($text, '##INCLUDE');
     if($inclpos === false):
@@ -230,16 +238,19 @@ class Templateparser extends \booosta\base\Module
       if($this->lang && file_exists("$prefix$subinclname.$this->lang")) $subinclnamelang = "$subinclname.$this->lang";
       else $subinclnamelang = $subinclname;
 
+      #if(!empty($this->topobj->subtpldir)) $prefix = $this->topobj->subtpldir;
+
       if(isset($subtpls[$subinclname]) && $subtpls[$subinclname]) $subincl = self::get_template($subtpls[$subinclname], $subtpls);
-      elseif(file_exists("$prefix$subinclnamelang")) $subincl = self::get_template(file_get_contents("$prefix$subinclnamelang"), $subtpls);
-      elseif(file_exists("$prefix$subinclname")) $subincl = self::get_template(file_get_contents("$prefix$subinclname"), $subtpls);
-      elseif(file_exists($subinclnamelang)) $subincl = self::get_template(file_get_contents($subinclnamelang), $subtpls);
-      elseif(file_exists($subinclname)) $subincl = self::get_template(file_get_contents($subinclname), $subtpls);
+      elseif(is_readable("$prefix$subinclnamelang")) $subincl = self::get_template(file_get_contents("$prefix$subinclnamelang"), $subtpls);
+      elseif(is_readable("$prefix$subinclname")) $subincl = self::get_template(file_get_contents("$prefix$subinclname"), $subtpls);
+      elseif(is_readable($subinclnamelang)) $subincl = self::get_template(file_get_contents($subinclnamelang), $subtpls);
+      elseif(is_readable($subinclname)) $subincl = self::get_template(file_get_contents($subinclname), $subtpls);
       else $subincl = self::get_template($subinclnamelang);
       $parsetext2 = self::get_template(substr($text, $inclendpos+2), $subtpls);
     endif; 
  
-    #\booosta\debug("subincl: $subincl");
+    #\booosta\Framework::debug("search: $prefix$subinclname");
+    #\booosta\Framework::debug("subincl: $subincl");
     return $parsetext1 . $subincl . $parsetext2;
   }
  
@@ -270,6 +281,8 @@ class Templateparser extends \booosta\base\Module
     endforeach;
     #\booosta\debug($attribute);
     #\booosta\debug($attribute[0]);
+
+    $tpl_module = $this->config('template_module') ?? '';
  
     if(!empty($this->scripttags[$attribute[0]]) && ($html = $this->scripttags[$attribute[0]]) != ''):      // Tag found in scripttags
       $tagobj = $this->makeInstance("\\booosta\\templateparser\\GenericTag", $code, $html, $attribute, $extraattr, $this->defaultvars,
@@ -282,14 +295,18 @@ class Templateparser extends \booosta\base\Module
           $tagobj = $this->makeInstance("\\booosta\\templateparser\\GenericTag", $code, $html, $attribute, $extraattr, $this->defaultvars,
                                       $this->scriptprecode[$attribute[0]] ?? null, $this->scriptpostcode[$attribute[0]] ?? null);
         else:   // alias found, but not in scripttags
-          if(class_exists("\\booosta\\templateparser\\tags\\{$this->aliases[$attribute[0]]}")):
+          if($tpl_module && class_exists("\\booosta\\templateparser\\tags\\$tpl_module\\{$this->aliases[$attribute[0]]}")):
+            $tagobj = $this->makeInstance("\\booosta\\templateparser\\tags\\$tpl_module\\{$this->aliases[$attribute[0]]}", $code, $this->defaultvars, $attribute, $extraattr);
+          elseif(class_exists("\\booosta\\templateparser\\tags\\{$this->aliases[$attribute[0]]}")):
             $tagobj = $this->makeInstance("\\booosta\\templateparser\\tags\\{$this->aliases[$attribute[0]]}", $code, $this->defaultvars, $attribute, $extraattr);
           else:
             return '{'.$code.'}';   // not found in aliases, do not change tag
           endif;
         endif;
       else:  // not found in aliases
-        if(class_exists("\\booosta\\templateparser\\tags\\{$attribute[0]}")):
+        if($tpl_module && class_exists("\\booosta\\templateparser\\tags\\$tpl_module\\{$attribute[0]}")):
+          $tagobj = $this->makeInstance("\\booosta\\templateparser\\tags\\$tpl_module\\{$attribute[0]}", $code, $this->defaultvars, $attribute, $extraattr);
+        elseif(class_exists("\\booosta\\templateparser\\tags\\{$attribute[0]}")):
           $tagobj = $this->makeInstance("\\booosta\\templateparser\\tags\\{$attribute[0]}", $code, $this->defaultvars, $attribute, $extraattr);
         else:
           return '{'.$code.'}';   // not found in aliases, do not change tag
