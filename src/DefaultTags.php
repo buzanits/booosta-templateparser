@@ -38,7 +38,6 @@ class DefaultTags extends Tags
     <link rel='stylesheet' type='text/css' href='%cal_libpath/tcal.css' media='all' />",
 
     'IMG'            => "<img src='%1' %_>",
-    'LINK'           => "<a href='%2' %_>%1</a>",
     'PICLINK'        => "<a href='%2' %_><img src='%1' border='0'></a>",
     
     ];
@@ -83,6 +82,18 @@ class DefaultTags extends Tags
 
 
 namespace booosta\templateparser\tags;
+
+class link extends \booosta\templateparser\Tag
+{
+  protected $html = "<a href='%2' %_>%1</a>";
+
+  protected function precode()
+  {
+    $dest = $this->attributes[2];
+    if(substr($dest, 0, 4) != 'http') $dest = str_replace('//', '/', $dest);
+    $this->html = str_replace("%2", $dest, $this->html);
+  }
+}
 
 class textarea extends \booosta\templateparser\Tag
 {
@@ -314,6 +325,8 @@ class redirect extends \booosta\templateparser\Tag
 
   protected function postcode()
   {
-    $this->html = str_replace("%href", $this->attributes[1], $this->html);
+    $dest = $this->attributes[1];
+    if(substr($dest, 0, 4) != 'http') $dest = str_replace('//', '/', $dest);
+    $this->html = str_replace("%href", $dest, $this->html);
   }
 }
