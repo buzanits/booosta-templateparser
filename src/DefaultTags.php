@@ -206,8 +206,8 @@ class tableselect0 extends tableselect
 
 class timesel extends \booosta\templateparser\Tag
 {
-  protected $html = "<select name='%1_hour' class='form-control epbtimesel %class' id='%1_hour'  %_>%hoptions</select> : 
-                     <select name='%1_minute' class='form-control epbtimesel %class' id='%1_minute' %_>%moptions</select>";
+  protected $html = "<select name='%1_hour' class='form-control booostatimesel %class' id='%1_hour'  %_>%hoptions</select> : 
+                     <select name='%1_minute' class='form-control booostatimesel %class' id='%1_minute' %_>%moptions</select>";
 
   protected $add_hoptions = '';
   protected $add_moptions = '';

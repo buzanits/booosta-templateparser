@@ -112,6 +112,7 @@ class Templateparser extends \booosta\base\Module
         $replacements[] = $this->make_jquery_ready($js) . $search;
       endforeach;
 
+    #\booosta\Framework::debug('sharedInfo'); \booosta\Framework::debug(self::$sharedInfo);
     $parsetext = str_replace($searches, $replacements, $parsetext);
       
     return $parsetext;
@@ -341,7 +342,7 @@ class Tags extends \booosta\base\Base
   public function merge_scriptpostcode($data, $override) { $this->scriptpostcode = $override ? array_merge($this->scriptpostcode, $data) : array_merge($data, $this->scriptpostcode); }
   public function merge_defaultvars($data, $override) { $this->defaultvars = $override ? array_merge($this->defaultvars, $data) : array_merge($data, $this->defaultvars); }
   public function merge_aliases($data, $override) { $this->aliases = $override ? array_merge($this->aliases, $data) : array_merge($data, $this->aliases); }
-  public function diff_aliases($data) { $this->aliases = array_diff($this->aliases, $data); }
+  public function diff_aliases($data) { $this->aliases = array_diff_key($this->aliases, $data); }
 
   public function merge($obj, $override = false)
   {

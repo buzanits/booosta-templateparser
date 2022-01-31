@@ -292,8 +292,8 @@ class btimesel extends timesel
   protected $html = "<div class='form-group'>
                        <label for='%1' class='col-sm-%size control-label'>%title</label>
                        <div class='col-sm-4'>
-                         <select name='%1_hour' class='form-control epbtimesel %class' id='%1_hour'  %_>%hoptions</select> : 
-                         <select name='%1_minute' class='form-control epbtimesel %class' id='%1_minute' %_>%moptions</select>
+                         <select name='%1_hour' class='form-control booostatimesel %class' id='%1_hour'  %_>%hoptions</select> : 
+                         <select name='%1_minute' class='form-control booostatimesel %class' id='%1_minute' %_>%moptions</select>
                        </div>
                      </div>";
 }
