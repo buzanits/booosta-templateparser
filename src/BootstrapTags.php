@@ -225,7 +225,7 @@ class bstatic extends btext
 class btextarea extends textarea
 {
   protected $html = "<div class='form-group'>
-                       <label for='%1' class='col-sm-%size control-label'>%textareatitle</label>
+                       <label for='%1' class='col-sm-%size control-label'>%texttitle</label>
                        <div class='col-sm-%asize'>
                          <textarea name='%1' cols='%2' rows='%3' class='form-control %class' %_>%content</textarea>
                        </div>
