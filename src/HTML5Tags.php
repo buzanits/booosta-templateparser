@@ -11,7 +11,7 @@ class HTML5Tags extends Tags
 
     $this->scripttags = [
     
-    #'COLOR'          => "<input type='color' name='%1' class='%class' %_>",
+    'COLOR'          => "<input type='color' name='%1' id='%1' value='%2' class='%class' %_>",
     'DATETIME'       => "<input type='datetime' name='%1' value='%2' size='%3' class='%class' %_>",
     'DATETIMEL'      => "<input type='datetime-local' name='%1' value='%2' size='%3' class='%class' %_>",
     'EMAIL'          => "<input type='email' name='%1' value='%2' size='%3' class='%class' %_>",
