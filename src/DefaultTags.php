@@ -1,6 +1,8 @@
 <?php
 namespace booosta\templateparser;
 
+use \booosta\Framework as b;
+
 class DefaultTags extends Tags
 {
   public function __construct()
@@ -149,7 +151,8 @@ class select extends \booosta\templateparser\Tag
   protected function postcode()
   {
     $lines = explode("\n", $this->code);
-    $headcode = array_shift($lines);
+    array_shift($lines);
+    $opts = '';
 
     foreach($lines as $line):
       $key = preg_replace("/.*\[([^\]]*)\].*/", "$1", $line);
@@ -194,11 +197,11 @@ class tableselect extends \booosta\templateparser\Tag
   }
 }
 
-
 class tableselect0 extends tableselect
 {
   protected function get_opts($name, $id)
   {
+    #b::debug("in get_opts");
     return [0 => $this->attributes[8]] + parent::get_opts($name, $id);
   }
 }
@@ -328,5 +331,13 @@ class redirect extends \booosta\templateparser\Tag
     $dest = $this->attributes[1];
     if(substr($dest, 0, 4) != 'http') $dest = str_replace('//', '/', $dest);
     $this->html = str_replace("%href", $dest, $this->html);
+  }
+}
+
+class tplconfig extends \booosta\templateparser\Tag
+{
+  protected function postcode()
+  {
+    self::$sharedInfo['templateparser']['config'][$this->attributes[1]] = $this->attributes[2];
   }
 }

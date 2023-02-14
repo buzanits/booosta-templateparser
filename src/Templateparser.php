@@ -18,6 +18,7 @@ class Templateparser extends \booosta\base\Module
     parent::__construct();
 
     $this->lang = $lang;
+    #\booosta\Framework::debug("DB: " . is_object($this->DB));
 
     $this->tags = 'DefaultTags';
 
@@ -35,6 +36,7 @@ class Templateparser extends \booosta\base\Module
   public function parse_template($tpl, $subtpls = null, $tplvars = null, $options = [])
   {
     #\booosta\Framework::debug("tpl: " . is_readable($tpl));
+    #\booosta\Framework::debug($tplvars);
     $tags = $this->makeInstance("\\booosta\\templateparser\\" . $this->tags);
     $this->scripttags = $tags->get_scripttags();
     $this->scriptprecode = $tags->get_scriptprecode();
@@ -124,7 +126,7 @@ class Templateparser extends \booosta\base\Module
     if(!is_array($TPL)) $TPL = [];
 
     $original = $parsetext;
-    #\booosta\debug("original: $parsetext");
+    #\booosta\Framework::debug("original: $parsetext");
 
     $parsetext = preg_replace_callback('/{%PHPSELF}/', function($m){ return $_SERVER['PHP_SELF']; }, $parsetext);
     $parsetext = preg_replace_callback('/{%SCRIPTNAME}/', function($m){ return str_replace('/', '', $_SERVER['SCRIPT_NAME']); }, $parsetext);
@@ -139,8 +141,8 @@ class Templateparser extends \booosta\base\Module
     $parsetext = preg_replace_callback('/{([^}]+)}/', function($m){ return self::parse_pseudotag(stripslashes($m[1])); }, $parsetext);
     $parsetext = str_replace('__dollar__', '$', $parsetext);
 
-    #\booosta\debug("vars:"); \booosta\debug($TPL);
-    #\booosta\debug("replaced: $parsetext");
+    #\booosta\Framework::debug("replaced: $parsetext");
+    #\booosta\Framework::debug("vars:"); \booosta\Framework::debug($TPL);
 
     $this->do_replacement = ($parsetext != $original);
     return $parsetext;
@@ -414,11 +416,15 @@ abstract class Tag extends \booosta\base\Base
 
   public function __construct($code, $defaultvars = [], $attributes = [], $extraattributes = [], $html = null)
   {
+    parent::__construct();
+
     if($html !== null) $this->html = $html;
     $this->code = $code;
     $this->defaultvars = $defaultvars;
     $this->attributes = $attributes;
     $this->extraattributes = $extraattributes;
+
+    if(is_array($this->config('templateparser_defaultvars'))) $this->defaultvars = array_merge($this->defaultvars, $this->config('templateparser_defaultvars'));
 
     $this->precode();
 
