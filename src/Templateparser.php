@@ -6,7 +6,7 @@ class Templateparser extends \booosta\base\Module
 {
   use moduletrait_templateparser;
 
-  public $lang;
+  public $lang, $usertype;
 
   protected $scripttags, $scriptprecode, $scriptpostcode, $defaultvars, $aliases;
   protected $tplvars;
@@ -18,6 +18,7 @@ class Templateparser extends \booosta\base\Module
     parent::__construct();
 
     $this->lang = $lang;
+    if($usertype = $this->topobj?->get_user()?->get_user_type()) $this->usertype = $usertype;
     #\booosta\Framework::debug("DB: " . is_object($this->DB));
 
     $this->tags = 'DefaultTags';
@@ -219,7 +220,13 @@ class Templateparser extends \booosta\base\Module
       $tpl = substr($tpl, 1);
     endif;
 
-    if($this->lang && file_exists("$prefix$tpl.$this->lang")) $text = file_get_contents("$prefix$tpl.$this->lang");
+    if(is_readable("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl");
+    elseif(is_readable("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl");
+    elseif(is_readable("tpl/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/$tpl");
+    elseif(is_readable("tpl/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/$tpl");
+    elseif(is_readable("tpl/$tpl")) $text = file_get_contents("tpl/$tpl");
+
+    elseif($this->lang && file_exists("$prefix$tpl.$this->lang")) $text = file_get_contents("$prefix$tpl.$this->lang");
     elseif(is_readable("$prefix$tpl")) $text = file_get_contents("$prefix$tpl");
     elseif($this->lang && file_exists("$subprefix$tpl.$this->lang")) $text = file_get_contents("$subprefix$tpl.$this->lang");
     elseif(is_readable("$subprefix$tpl")) $text = file_get_contents("$subprefix$tpl");
