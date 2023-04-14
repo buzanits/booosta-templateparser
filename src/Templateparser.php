@@ -1,6 +1,8 @@
 <?php
 namespace booosta\templateparser;
-\booosta\Framework::init_module('templateparser');
+
+use \booosta\Framework as b;
+b::init_module('templateparser');
 
 class Templateparser extends \booosta\base\Module
 {
@@ -207,13 +209,13 @@ class Templateparser extends \booosta\base\Module
   
   protected function get_template($tpl, $subtpls = null)
   {
-    #\booosta\Framework::debug("get: $tpl");
     if(is_object($this->topobj)):
       $prefix = $this->topobj->tpldir;
       $subprefix = $this->topobj->subtpldir;
     else:
       $prefix = '';
     endif;
+    #b::debug("prefix: $prefix, tpl: $tpl");
 
     if(substr($tpl, 0, 1) == '/'):    // get template from root path
       $prefix = '';
@@ -225,6 +227,7 @@ class Templateparser extends \booosta\base\Module
     elseif(is_readable("tpl/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/$tpl");
     elseif(is_readable("tpl/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/$tpl");
     elseif(is_readable("tpl/$tpl")) $text = file_get_contents("tpl/$tpl");
+    elseif(is_readable("{$subprefix}tpl/$tpl")) $text = file_get_contents("{$subprefix}tpl/$tpl");
 
     elseif($this->lang && file_exists("$prefix$tpl.$this->lang")) $text = file_get_contents("$prefix$tpl.$this->lang");
     elseif(is_readable("$prefix$tpl")) $text = file_get_contents("$prefix$tpl");
