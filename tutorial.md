@@ -95,6 +95,8 @@ If you do a default installation of Booosta, the [https://getbootstrap.com](Boot
 be installed as a dependency. There are special Booosta tags that display Boostrap optimized output. They all start
 with `B` like `BTEXT`. Here you find a list of tags for Bootstrap with a short explanation.
 
+|tag|example|explanation|
+|---|---|---|
 |BLINK|{BLINK&#124;Linktext&#124;Linktarget}|Shows a link in the form of a button|
 ||{BLINK&#124;Google&#124;http://google.com}||
 |BLINKADD|{BLINKADD&#124;Linktext&#124;Linktarget}|Same as BLINK, but also shows a `+` icon|
