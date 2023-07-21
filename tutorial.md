@@ -91,4 +91,33 @@ So this tag will be expanded to:
 `<input type="text" name="firstname" value="Alice" class="niceform" onBlur="check();">`
 
 
+If you do a default installation of Booosta, the [https://getbootstrap.com](Bootstrap Framework) will automatically
+be installed as a dependency. There are special Booosta tags that display Boostrap optimized output. They all start
+with `B` like `BTEXT`. Here you find a list of tags for Bootstrap with a short explanation.
+
+|BLINK|{BLINK&#124;Linktext&#124;Linktarget}|Shows a link in the form of a button|
+||{BLINK&#124;Google&#124;http://google.com}||
+|BLINKADD|{BLINKADD&#124;Linktext&#124;Linktarget}|Same as BLINK, but also shows a `+` icon|
+||{BLINKADD&#124;Google&#124;http://google.com}||
+|BLINKRED|{BLINKRED&#124;Linktext&#124;Linktarget}|Same as BLINK, but appears in red|
+||{BLINKRED&#124;Google&#124;http://google.com}||
+|BLINKGREEN|{BLINKGREEN&#124;Linktext&#124;Linktarget}|Same as BLINK, but appears in green|
+||{BLINKGREEN&#124;Google&#124;http://google.com}||
+|BTEXT|{BTEXT&#124;Name&#124;Value&#124;Title}|Shows a text input field in a form|
+||{BTEXT&#124;firstname&#124;Alice&#124;Firstname}||
+|BFILE|{BFILE&#124;Name&#124;Value}|Shows as file input field in a form|
+||{BFILE&#124;uploadfile}||
+|BEMAIL|{BEMAIL&#124;Name&#124;Value}|Shows an email input field in a form|
+||{BEMAIL&#124;email&#124;reply@example.com}||
+|BPASSWORD|{BPASSWORD&#124;Name}|Shows a password input field in a form that does not show the input|
+||{BPASSWORD&#124;newpassword}||
+|BDATE|{BDATE&#124;Name&#124;Value}|Show a date picker|
+||{BDATE&#124;startdate&#124;2023-07-21}||
+|BCHECKBOX|{BCHECKBOX&#124;Name&#124;Checked}|Shows a checkbox in a form|
+||{BCHECKBOX&#124;accept&#124;0}||
+|BSTATIC|{BSTATIC&#124;Text&#124;Caption}|Shows a static text in a form|
+||{BSTATIC&#124;This is an important information&#124;Note}||
+
+
 WORK IN PROGRESS
+
