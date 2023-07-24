@@ -119,6 +119,29 @@ with `B` like `BTEXT`. Here you find a list of tags for Bootstrap with a short e
 ||{BCHECKBOX&#124;accept&#124;0}||
 |BSTATIC|{BSTATIC&#124;Text&#124;Caption}|Shows a static text in a form|
 ||{BSTATIC&#124;This is an important information&#124;Note}||
+|BFORMSTART|{BFORMSTART&#124;Action}|Starts a HTML form|
+||{BFORMSTART&#124;/customer/new}||
+|BFORMSTARTM|{BFORMSTARTM&#124;Action}|Starts a HTML form with enctype multipart/formdata for uploading files|
+||{BFORMSTART&#124;/customer/new}||
+|BFORMSUBMIT|{BFORMSUBMIT}|A submit button for a HTML form|
+||{BFORMSUBMIT}||
+|BFORMEND|{BFORMEND}|End of a HTML form. {/BFORM} is a short form of that|
+||{BFORMEND}||
+|BBOXCENTER|{BBOXCENTER}|Starts a Boostrap box horizontal centered|
+||{BBOXCENTER&#124;bboxsize::12}|`bboxsize` is the size (12=full, 6=half and so on)|
+|/BBOXCENTER|{/BBOXCENTER}|End fo a Boostrap box|
+|BPANEL|{BPANEL}|Starts a panel that can be filled with content. Usually it is inside a `BBOXCENTER`|
+||{BPANEL&#124;paneltitle::My content}||
+|/BPANEL|{/BPANEL}|End of a panel|
+
+There are also some tags that are multi line. This means, not all of the tag code is in a single line:
+
+|tag|example|explanation|
+|---|---|---|
+|BTEXTAREA|{BTEXTAREA&#124;Name&#124;Rows<br>Content}|Shows a textarea in a HTML form|
+||{BTEXTAREA&#124;comment&#124;5<br>This is the sample text.<br>Best regards!}|A text area with 5 lines|
+|BSELECT|{BSELECT&#124;Name&#124;Default<br>Options}|Shows a select in a HTML form|
+||{BSELECT&#124;gender&#124;f<br>[m]Male<br>[f]Female}|The value inside [] is sent by the form. If omitted, the text is sent|
 
 
 WORK IN PROGRESS
