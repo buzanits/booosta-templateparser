@@ -211,6 +211,24 @@ class bcheckbox extends btext
 }
 
 
+class bradio extends btext
+{
+  protected $html = "<div class='form-group'>
+                       <div class='col-sm-offset-%size col-sm-%asize'>
+                         <div class='checkbox'>
+                           <label><input type='radio' name='%1' value='%2' %3 class='%class' id='%1' %_> %texttitle</label>
+                         </div>
+                       </div>
+                     </div>";
+
+  protected function precode()
+  {
+    if($this->attributes[3]) $this->attributes[3] = 'checked'; else $this->attributes[3] = '';
+    if($this->extraattributes['texttitle'] == '') $this->extraattributes['texttitle'] = $this->attributes[1];
+  }
+}
+
+
 class bstatic extends btext
 {
   protected $html = "<div class='form-group'>
@@ -227,7 +245,7 @@ class btextarea extends textarea
   protected $html = "<div class='form-group'>
                        <label for='%1' class='col-sm-%size control-label'>%texttitle</label>
                        <div class='col-sm-%asize'>
-                         <textarea name='%1' cols='%2' rows='%3' class='form-control %class' %_>%content</textarea>
+                         <textarea id='%1' name='%1' cols='%2' rows='%3' class='form-control %class' %_>%content</textarea>
                        </div>
                      </div>";
 
@@ -244,7 +262,7 @@ class rtextarea extends btextarea
   protected $html = "<div class='form-group'>
                        <label for='%1' class='col-sm-%size control-label'>%textareatitle</label>
                        <div class='col-sm-%rasize'>
-                         <textarea name='%1' cols='%2' rows='%3' class='form-control %class' %_>%content</textarea>
+                         <textarea id='%1' name='%1' cols='%2' rows='%3' class='form-control %class' %_>%content</textarea>
                        </div>
                      <div class='col-sm-%rsize brighttext'>";
 }

@@ -225,6 +225,9 @@ class Templateparser extends \booosta\base\Module
     if(is_readable("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl");
     elseif(is_readable("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl");
     elseif(is_readable("tpl/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/$tpl");
+    elseif(is_readable("tpl/lang-en/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/lang-en/type-{$this->usertype}/$tpl");
+    elseif(is_readable("tpl/type-{$this->usertype}/lang-en/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/lang-en/$tpl");
+    elseif(is_readable("tpl/lang-en/$tpl")) $text = file_get_contents("tpl/lang-en/$tpl");
     elseif(is_readable("tpl/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/$tpl");
     elseif(is_readable("tpl/$tpl")) $text = file_get_contents("tpl/$tpl");
     elseif(is_readable("{$subprefix}tpl/$tpl")) $text = file_get_contents("{$subprefix}tpl/$tpl");
