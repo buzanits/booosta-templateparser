@@ -117,12 +117,19 @@ with `B` like `BTEXT`. Here you find a list of tags for Bootstrap with a short e
 ||{BDATE&#124;startdate&#124;2023-07-21}||
 |BCHECKBOX|{BCHECKBOX&#124;Name&#124;Checked}|Shows a checkbox in a form|
 ||{BCHECKBOX&#124;accept&#124;0}||
+|BRADIO|{BRADIO&#124;Name&#124;Value&#124;Default}|Shows a radio element in a form|
+||{BRADIO&#124;gender&#124;female&#124;{%gender}}|Radio is checked, when value and default are identical|
 |BSTATIC|{BSTATIC&#124;Text&#124;Caption}|Shows a static text in a form|
 ||{BSTATIC&#124;This is an important information&#124;Note}||
+|BFORMGRP|{BFORMGRP&#124;Caption}|Shows arbitrary content like dropdowns etc. in the form|
+|BFORMGRPEND|{BFORMGRPEND}|Shows arbitrary content like dropdowns etc. in the form|
+||{BFORMGRP&#124;Birthdate}{%birthdayselect}{BFORMGRPEND}||
 |BFORMSTART|{BFORMSTART&#124;Action}|Starts a HTML form|
 ||{BFORMSTART&#124;/customer/new}||
 |BFORMSTARTM|{BFORMSTARTM&#124;Action}|Starts a HTML form with enctype multipart/formdata for uploading files|
-||{BFORMSTART&#124;/customer/new}||
+||{BFORMSTARTM&#124;/customer/new}||
+|BFORMSTARTG|{BFORMSTARTG&#124;Action}|Starts a HTML form with method `GET` instead of `POST`|
+||{BFORMSTARTG&#124;/customer/showall}||
 |BFORMSUBMIT|{BFORMSUBMIT}|A submit button for a HTML form|
 ||{BFORMSUBMIT}||
 |BFORMEND|{BFORMEND}|End of a HTML form. {/BFORM} is a short form of that|
@@ -133,6 +140,19 @@ with `B` like `BTEXT`. Here you find a list of tags for Bootstrap with a short e
 |BPANEL|{BPANEL}|Starts a panel that can be filled with content. Usually it is inside a `BBOXCENTER`|
 ||{BPANEL&#124;paneltitle::My content}||
 |/BPANEL|{/BPANEL}|End of a panel|
+|REDALERT|{REDALERT&#124;Alerttext}|Shows an alert in red|
+||{REDALERT&#124;Something has gone wrong}||
+|GREENALERT|{GREENALERT&#124;Alerttext}|Shows an alert in red|
+||{GREENALERT&#124;Everything worked fine}||
+|IMG|{IMG&#124;Source}|Shows an image|
+||{IMG&#124;images/frontimage.jpg}||
+|PICLINK|{PICLINK&#124;Source&#124;Link}|Shows an image with a hyperlink|
+||{PICLINK&#124;images/mylink.jpg&#124;https://www.example.com}||
+|T|{T&#124;Text}|Shows the translation of a text if available|
+||{T&#124;Welcome to my site}|See the translator module how to implement translations|
+|REDIRECT|{REDIRECT&#124;URL}|Redirects the browser to the URL|
+||{REDIRECT&#124;https://final.destination.com}||
+
 
 There are also some tags that are multi line. This means, not all of the tag code is in a single line:
 
@@ -143,6 +163,4 @@ There are also some tags that are multi line. This means, not all of the tag cod
 |BSELECT|{BSELECT&#124;Name&#124;Default<br>Options}|Shows a select in a HTML form|
 ||{BSELECT&#124;gender&#124;f<br>[m]Male<br>[f]Female}|The value inside [] is sent by the form. If omitted, the text is sent|
 
-
-WORK IN PROGRESS
 
