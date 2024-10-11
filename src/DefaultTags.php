@@ -84,6 +84,7 @@ class DefaultTags extends Tags
 
 
 namespace booosta\templateparser\tags;
+use \booosta\Framework as b;
 
 class link extends \booosta\templateparser\Tag
 {
@@ -92,8 +93,13 @@ class link extends \booosta\templateparser\Tag
   protected function precode()
   {
     $dest = $this->attributes[2];
+    #b::debug("dest: $dest");
+
+    $dest = str_replace(['%8', '%2'], ['__proz8__', '__proz2__'], $dest);
+
     if(substr($dest, 0, 4) != 'http') $dest = str_replace('//', '/', $dest);
     $this->html = str_replace("%2", $dest, $this->html);
+    #b::debug("html: $this->html");
   }
 }
 

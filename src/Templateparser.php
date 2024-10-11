@@ -207,6 +207,30 @@ class Templateparser extends \booosta\base\Module
   protected function globalize($var) { return "\$tplvars[\"$var\"]"; }
   protected function localize($var) { return "\${\"$var\"}"; }
   
+  public function get_templatefile($tpl, $prefix = '', $subprefix = '')
+  {
+    $usertype = $this->usertype ?? 'public';
+
+    #b::debug(getcwd()); #b::debug($usertype); #b::debug($tpl);
+
+    if(is_readable("tpl/lang-{$this->lang}/type-{$usertype}/$tpl")) return "tpl/lang-{$this->lang}/type-{$usertype}/$tpl";
+    if(is_readable("tpl/type-{$usertype}/lang-{$this->lang}/$tpl")) return "tpl/type-{$usertype}/lang-{$this->lang}/$tpl";
+    if(is_readable("tpl/lang-{$this->lang}/$tpl")) return "tpl/lang-{$this->lang}/$tpl";
+    if(is_readable("tpl/lang-en/type-{$usertype}/$tpl")) return "tpl/lang-en/type-{$usertype}/$tpl";
+    if(is_readable("tpl/type-{$usertype}/lang-en/$tpl")) return "tpl/type-{$usertype}/lang-en/$tpl";
+    if(is_readable("tpl/lang-en/$tpl")) return "tpl/lang-en/$tpl";
+    if(is_readable("tpl/type-{$usertype}/$tpl")) return "tpl/type-{$usertype}/$tpl";
+    if(is_readable("tpl/$tpl")) return "tpl/$tpl";
+    if(is_readable("{$subprefix}tpl/$tpl")) return "{$subprefix}tpl/$tpl";
+
+    if($this->lang && file_exists("$prefix$tpl.$this->lang")) return "$prefix$tpl.$this->lang";
+    if(is_readable("$prefix$tpl")) return "$prefix$tpl";
+    if($this->lang && file_exists("$subprefix$tpl.$this->lang")) return "$subprefix$tpl.$this->lang";
+    if(is_readable("$subprefix$tpl")) return "$subprefix$tpl";
+
+    return null;
+  }
+
   protected function get_template($tpl, $subtpls = null)
   {
     if(is_object($this->topobj)):
@@ -222,20 +246,9 @@ class Templateparser extends \booosta\base\Module
       $tpl = substr($tpl, 1);
     endif;
 
-    if(is_readable("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/type-{$this->usertype}/$tpl");
-    elseif(is_readable("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/lang-{$this->lang}/$tpl");
-    elseif(is_readable("tpl/lang-{$this->lang}/$tpl")) $text = file_get_contents("tpl/lang-{$this->lang}/$tpl");
-    elseif(is_readable("tpl/lang-en/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/lang-en/type-{$this->usertype}/$tpl");
-    elseif(is_readable("tpl/type-{$this->usertype}/lang-en/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/lang-en/$tpl");
-    elseif(is_readable("tpl/lang-en/$tpl")) $text = file_get_contents("tpl/lang-en/$tpl");
-    elseif(is_readable("tpl/type-{$this->usertype}/$tpl")) $text = file_get_contents("tpl/type-{$this->usertype}/$tpl");
-    elseif(is_readable("tpl/$tpl")) $text = file_get_contents("tpl/$tpl");
-    elseif(is_readable("{$subprefix}tpl/$tpl")) $text = file_get_contents("{$subprefix}tpl/$tpl");
+    $templatefile = $this->get_templatefile($tpl, $prefix, $subprefix);
 
-    elseif($this->lang && file_exists("$prefix$tpl.$this->lang")) $text = file_get_contents("$prefix$tpl.$this->lang");
-    elseif(is_readable("$prefix$tpl")) $text = file_get_contents("$prefix$tpl");
-    elseif($this->lang && file_exists("$subprefix$tpl.$this->lang")) $text = file_get_contents("$subprefix$tpl.$this->lang");
-    elseif(is_readable("$subprefix$tpl")) $text = file_get_contents("$subprefix$tpl");
+    if($templatefile) $text = file_get_contents($templatefile);
     else $text = $tpl;
     #\booosta\Framework::debug("tpl: $prefix$tpl"); \booosta\Framework::debug($text);
 
@@ -484,7 +497,8 @@ abstract class Tag extends \booosta\base\Base
       if(!isset($this->extraattributes[$key])) $this->extraattributes[$key] = $defvar;
       if(!isset($this->attributes[$key])) $this->attributes[$key] = $defvar;
     endforeach;
- 
+
+    $this->html = str_replace(['__proz8__', '__proz2__'], ['%8', '%2'], $this->html);
     $this->postcode();
   }
 
