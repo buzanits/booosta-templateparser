@@ -181,6 +181,7 @@ class Templateparser extends \booosta\base\Module
     $code = str_replace('}', '__curlc__', $code);
     $code = str_replace('|', '__pipe__', $code);
     $code = str_replace('$', '__dollar__', $code);
+    $code = str_replace('::', '__double__', $code);
     $code = str_replace("\\", '__bksl__', $code);
     return $code;
   }
@@ -191,6 +192,7 @@ class Templateparser extends \booosta\base\Module
     $code = str_replace('__curlc__', '}', $code);
     $code = str_replace('__pipe__', '|', $code);
     $code = str_replace('__dollar__', '$', $code);
+    $code = str_replace('__double__', '::', $code);
     $code = str_replace('__bksl__', "\\", $code);
     return $code;
   }
